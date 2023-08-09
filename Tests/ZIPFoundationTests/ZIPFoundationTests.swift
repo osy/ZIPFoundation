@@ -137,7 +137,7 @@ class ZIPFoundationTests: XCTestCase {
     }
 
     func runWithFileDescriptorLimit(_ limit: UInt64, handler: () -> Void) {
-        #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS) || os(Android)
+        #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS) || os(visionOS) || os(Android)
         let fileNoFlag = RLIMIT_NOFILE
         #else
         let fileNoFlag = Int32(RLIMIT_NOFILE.rawValue)
@@ -152,7 +152,7 @@ class ZIPFoundationTests: XCTestCase {
     }
 
     func runWithoutMemory(handler: () -> Void) {
-        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
         let systemAllocator = CFAllocatorGetDefault().takeUnretainedValue()
         CFAllocatorSetDefault(kCFAllocatorNull)
         defer { CFAllocatorSetDefault(systemAllocator) }
@@ -179,7 +179,7 @@ class ZIPFoundationTests: XCTestCase {
 extension ZIPFoundationTests {
     // From https://oleb.net/blog/2017/03/keeping-xctest-in-sync/
     func testLinuxTestSuiteIncludesAllTests() {
-        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
             let thisClass = type(of: self)
             let linuxCount = thisClass.allTests.count
             let darwinCount = Int(thisClass.defaultTestSuite.testCaseCount)
@@ -296,7 +296,7 @@ extension ZIPFoundationTests {
     }
 
     static var darwinOnlyTests: [(String, (ZIPFoundationTests) -> () throws -> Void)] {
-        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
         return [
             ("testFileModificationDate", testFileModificationDate),
             ("testFileModificationDateHelperMethods", testFileModificationDateHelperMethods),
@@ -365,7 +365,7 @@ extension Archive {
 
 extension Data {
     static func makeRandomData(size: Int) -> Data {
-        #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+        #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         let bytes = [UInt32](repeating: 0, count: size).map { _ in UInt32.random(in: 0...UInt32.max) }
         #else
             let bytes = [UInt32](repeating: 0, count: size).map { _ in random() }
